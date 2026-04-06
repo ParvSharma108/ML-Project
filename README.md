@@ -61,6 +61,7 @@ This script acts as the master pipeline. When executed, it will immediately:
 2. **Decision Tree Classifier:** Gini-impurity based branching mechanism.
 3. **Support Vector Machine (Linear Kernel):** Maximizing the margins between linearly separable points.
 4. **Support Vector Machine (RBF Kernel):** Mapping into infinite dimensional space to trace difficult boundary lines.
+5. **K-Nearest Neighbors (KNN):** Distance-based classifying based on the nearest data points.
 
 ## Evaluation Metrics
 We rely on standard Scikit-Learn metrics to validate the mathematical validity of our models:

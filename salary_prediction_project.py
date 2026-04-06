@@ -9,6 +9,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
 from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import (
     r2_score, accuracy_score, precision_score, 
     recall_score, f1_score, confusion_matrix, classification_report
@@ -165,7 +166,8 @@ classification_models = {
     "Logistic Regression": LogisticRegression(random_state=42),
     "Decision Tree Classifier": DecisionTreeClassifier(random_state=42),
     "SVM (Linear Kernel)": SVC(kernel='linear', random_state=42),
-    "SVM (RBF Kernel)": SVC(kernel='rbf', random_state=42)
+    "SVM (RBF Kernel)": SVC(kernel='rbf', random_state=42),
+    "K-Nearest Neighbors": KNeighborsClassifier(n_neighbors=5)
 }
 
 clf_results = {}
@@ -241,7 +243,7 @@ plt.close()
 print("-> Saved Plot: 'classification_comparison.png'")
 
 # Visualizing Confusion Matrices for the top Models
-models_to_plot = ["Logistic Regression", "SVM (Linear Kernel)", "SVM (RBF Kernel)"]
+models_to_plot = ["Logistic Regression", "SVM (Linear Kernel)", "SVM (RBF Kernel)", "K-Nearest Neighbors"]
 for model_name in models_to_plot:
     cm = confusion_matrix(y_test_clf, classification_models[model_name].predict(X_test_clf_scaled))
     plt.figure(figsize=(6, 5))
