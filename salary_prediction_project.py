@@ -261,4 +261,37 @@ for model_name in models_to_plot:
     plt.close()
     print(f"-> Saved Plot: '{filename}'")
 
+# --- 6.3 Combined All Models Comparison ---
+print("\n--- COMBINED ALL MODELS COMPARISON ---")
+all_model_names = list(reg_results.keys()) + list(clf_results.keys())
+# Using R² for regression and Accuracy for classification
+all_model_scores = list(reg_results.values()) + [metrics['Accuracy'] for metrics in clf_results.values()]
+
+# We use blue for regression and green for classification to distinguish them
+colors = ['skyblue'] * len(reg_results) + ['lightgreen'] * len(clf_results)
+
+plt.figure(figsize=(12, 7))
+# Reversing the order so Regression models appear at the top
+bars = plt.barh(all_model_names[::-1], all_model_scores[::-1], color=colors[::-1], edgecolor='k')
+plt.title('Complete End-to-End Model Comparison', fontsize=14, pad=15)
+plt.xlabel('Performance Score (R² for Regression | Accuracy for Classification)', fontsize=12)
+plt.xlim(0, 1.1)
+
+# Overlaying exact scores directly onto the bars
+for bar in bars:
+    plt.text(bar.get_width() + 0.01, bar.get_y() + bar.get_height()/2, 
+             f'{bar.get_width():.4f}', 
+             va='center', ha='left', fontweight='bold')
+
+# Creating a custom legend
+from matplotlib.patches import Patch
+legend_elements = [Patch(facecolor='skyblue', edgecolor='k', label='Regression Models (R² Score)'),
+                   Patch(facecolor='lightgreen', edgecolor='k', label='Classification Models (Accuracy)')]
+plt.legend(handles=legend_elements, loc='lower right')
+
+plt.tight_layout()
+plt.savefig('all_models_combined_comparison.png')
+plt.close()
+print("-> Saved Plot: 'all_models_combined_comparison.png'")
+
 print("\nEXECUTION COMPLETE. Check your project folder for the generated graphs!")
