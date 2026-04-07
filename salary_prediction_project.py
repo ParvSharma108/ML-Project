@@ -12,7 +12,8 @@ from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import (
     r2_score, accuracy_score, precision_score, 
-    recall_score, f1_score, confusion_matrix, classification_report
+    recall_score, f1_score, confusion_matrix, classification_report,
+    roc_curve, auc
 )
 import warnings
 warnings.filterwarnings('ignore')
@@ -165,8 +166,8 @@ print(f"Target: Binary Salary (> ${median_salary:,.0f} is Class 1)")
 classification_models = {
     "Logistic Regression": LogisticRegression(random_state=42),
     "Decision Tree Classifier": DecisionTreeClassifier(random_state=42),
-    "SVM (Linear Kernel)": SVC(kernel='linear', random_state=42),
-    "SVM (RBF Kernel)": SVC(kernel='rbf', random_state=42),
+    "SVM (Linear Kernel)": SVC(kernel='linear', probability=True, random_state=42),
+    "SVM (RBF Kernel)": SVC(kernel='rbf', probability=True, random_state=42),
     "K-Nearest Neighbors": KNeighborsClassifier(n_neighbors=5)
 }
 
@@ -293,5 +294,29 @@ plt.tight_layout()
 plt.savefig('all_models_combined_comparison.png')
 plt.close()
 print("-> Saved Plot: 'all_models_combined_comparison.png'")
+
+# --- 6.4 ROC Curve Generation ---
+print("\n--- GENERATING ROC CURVES ---")
+plt.figure(figsize=(10, 8))
+
+for name, model in classification_models.items():
+    if hasattr(model, "predict_proba"):
+        y_prob = model.predict_proba(X_test_clf_scaled)[:, 1]
+        fpr, tpr, _ = roc_curve(y_test_clf, y_prob)
+        roc_auc = auc(fpr, tpr)
+        plt.plot(fpr, tpr, lw=2, label=f'{name} (AUC = {roc_auc:.3f})')
+
+plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate', fontsize=12)
+plt.ylabel('True Positive Rate', fontsize=12)
+plt.title('Receiver Operating Characteristic (ROC) Curve comparison', fontsize=14)
+plt.legend(loc="lower right")
+plt.grid(alpha=0.3)
+plt.tight_layout()
+plt.savefig('roc_curve_comparison.png')
+plt.close()
+print("-> Saved Plot: 'roc_curve_comparison.png'")
 
 print("\nEXECUTION COMPLETE. Check your project folder for the generated graphs!")
